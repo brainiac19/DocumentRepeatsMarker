@@ -115,8 +115,7 @@ def usage_example():
     readable_dict = RepeatsMarker.generate_readable_dict(repeated_blocks, file_lines)
     readable_string = RepeatsMarker.generate_readable_string(readable_dict)
 
-    with open("check results.txt", "w") as writer:
-        writer.write("no repeats found" if readable_string == "" else readable_string)
+    print(readable_string)
 
 
 if __name__ == "__main__":
