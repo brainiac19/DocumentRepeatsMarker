@@ -4,30 +4,29 @@ from tkinter import filedialog
 
 
 class FileLoader:
-    def __init__(self):
-        self.encoding_try_list = ["utf-8", "utf-16", "gbk", "big5"]
-
     @staticmethod
     def prompt_get_file_path() -> str:
         root = tk.Tk()
         root.withdraw()
         return filedialog.askopenfilename()
 
-    def read_lines_at_path(self, file_path) -> list:
-        for encoding in self.encoding_try_list:
+    @staticmethod
+    def read_lines_at_path(file_path, encodings_list) -> list:
+        for encoding in encodings_list:
             try:
                 with open(file_path, encoding=encoding) as file:
                     return file.readlines()
             except UnicodeDecodeError:
                 continue
         else:
-            raise Exception("didn't find a matched encoding")
+            raise Exception("didn't find a matching encoding")
 
-    def choose_file_read_lines(self):
-        file_path = self.prompt_get_file_path()
+    @staticmethod
+    def choose_file_read_lines(encodings_list):
+        file_path = FileLoader.prompt_get_file_path()
         if file_path == "":
             return None
-        return self.read_lines_at_path(file_path)
+        return FileLoader.read_lines_at_path(file_path, encodings_list)
 
 
 class RepeatsMarker:
@@ -107,14 +106,14 @@ class RepeatsMarker:
 
 
 def usage_example():
-    file_lines = FileLoader().choose_file_read_lines()
+    encoding_try_list = ["utf-8", "utf-16", "utf-32", "gb18030"]
+    file_lines = FileLoader().choose_file_read_lines(encoding_try_list)
     if file_lines is None:
         return
 
     repeated_blocks = RepeatsMarker.find_repeats(file_lines)
     readable_dict = RepeatsMarker.generate_readable_dict(repeated_blocks, file_lines)
     readable_string = RepeatsMarker.generate_readable_string(readable_dict)
-
     print(readable_string)
 
 
