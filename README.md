@@ -1,6 +1,35 @@
 # DocumentRepeatsMarker
- Detects repeated parts in a document file, will generate a txt file in .py root folder named *check results*, showing some of the repeated parts and the line indices range, if RepeatsMarker.main() is called directly.
+检测文档中前后重复的部分，并打印重复段落行号区间。
  
- The latest update removed the ability to customize string matching criteria and can only make exact string matching now. This decision was made so it can deal with relatively larger files.
+# ReadlinesPostProcessing
+可修改*FileLoader.line_post_process()*在读入文件时对每行字符串修改。默认丢弃头尾空格。
+
+# IgnoreLine
+可修改*RepeatsMarker.ignore_line()*，经过该函数返回True的行会被加入忽略列表，默认若一行为空字符串或全是特殊字符，则加入该列表。仅被忽略行隔开的重复行将被归入同一重复片段。
+
+如：
+
+
+萧炎有了新的异火
+
+萧炎和云韵好上了
+
+
+萧炎有了新的异火
+
+--------------------------
+
+,,,,,,,...,.....,&^
+
+萧炎和云韵好上了
+
+
+将会被当作重复片段。
+
+# Other
+函数的可选参数意思基本都能从名字看出来
+generate_readable_dict()的show_first_last_lines_count是指若片段较长，则截取片段的前后各x行。
+index_increment是在行下标基础上增加一个增量后输出。默认为1。
  
- Side note:原本用于整理在贴吧连载的小说，被度娘吞吞吐吐逼得楼主可能发了多次同一章节，这样的情况。没有写自动剔除重复的东西，我太菜了没有自信不会误删。
+# Sidenote
+原本用于整理在贴吧连载的小说，被度娘吞吞吐吐逼得楼主可能发了多次同一章节，这样的情况。没有写自动剔除重复的东西，我太菜了没有自信不会误删。
