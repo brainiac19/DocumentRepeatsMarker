@@ -154,7 +154,7 @@ def usage_example_multiple_files():
         print(path.basename(_path) + "\n")
         file_lines = FileLoader().read_lines_at_path(_path, encoding_try_list, FileLoader.line_post_process)
 
-        repeated_blocks = RepeatsMarker.find_repeats(file_lines)
+        repeated_blocks = RepeatsMarker.find_repeats(file_lines, ignore_blocks_with_less_than_lines=2)
         readable_dict = RepeatsMarker.generate_readable_dict(repeated_blocks, file_lines)
         readable_string = RepeatsMarker.generate_readable_string(readable_dict)
 
