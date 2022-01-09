@@ -1,6 +1,7 @@
 import tkinter as tk
 from collections import defaultdict
 from tkinter import filedialog
+from os import path
 import regex as re
 
 
@@ -10,6 +11,12 @@ class FileLoader:
         root = tk.Tk()
         root.withdraw()
         return filedialog.askopenfilename()
+
+    @staticmethod
+    def prompt_get_file_paths() -> tuple:
+        root = tk.Tk()
+        root.withdraw()
+        return filedialog.askopenfilenames()
 
     @staticmethod
     def read_lines_at_path(file_path, encodings_list, string_post_process):
@@ -26,19 +33,12 @@ class FileLoader:
     def line_post_process(line: str):
         return line.strip()
 
-    @staticmethod
-    def choose_file_read_lines(encodings_list):
-        file_path = FileLoader.prompt_get_file_path()
-        if file_path == "":
-            return None
-        return FileLoader.read_lines_at_path(file_path, encodings_list, FileLoader.line_post_process)
-
 
 class RepeatsMarker:
 
     @staticmethod
     def ignore_line(line):
-        if re.match(r'^[_\W]*$', line) is None:
+        if re.match(r'^[。？！，、；：“”‘（）《》〈〉【】『』「」﹃﹄〔〕…—～﹏￥_\W]*$', line) is None:
             return False
         else:
             return True
@@ -96,7 +96,7 @@ class RepeatsMarker:
                                index_increment=1) -> dict:
         result_dict = {}
         for blocks_range_list in repeated_blocks_iterable:
-            key = "\n"
+            key = "\n\n"
             if blocks_range_list[0][1] - blocks_range_list[0][0] > show_first_last_lines_count * 2:
                 for i in range(show_first_last_lines_count):
                     key += str(file_lines_list[blocks_range_list[0][0] + i]).strip("\n") + "\n"
@@ -109,7 +109,7 @@ class RepeatsMarker:
             else:
                 for i in range(blocks_range_list[0][0], blocks_range_list[0][1] + 1):
                     key += file_lines_list[i].strip("\n") + "\n"
-            key += "\n\n\n"
+            key += "\n\n"
             result_dict[key] = list([[index + index_increment for index in _range] for _range in blocks_range_list])
         return result_dict
 
@@ -132,15 +132,35 @@ class RepeatsMarker:
 
 def usage_example():
     encoding_try_list = ["utf-8", "gb18030"]
-    file_lines = FileLoader().choose_file_read_lines(encoding_try_list)
-    if file_lines is None:
+    file_path = FileLoader.prompt_get_file_path()
+    if file_path == "":
         return
+    file_lines = FileLoader.read_lines_at_path(file_path, encoding_try_list, FileLoader.line_post_process)
 
     repeated_blocks = RepeatsMarker.find_repeats(file_lines)
     readable_dict = RepeatsMarker.generate_readable_dict(repeated_blocks, file_lines)
     readable_string = RepeatsMarker.generate_readable_string(readable_dict)
+
     print(readable_string)
 
 
+def usage_example_multiple_files():
+    encoding_try_list = ["utf-8", "gb18030"]
+    paths = FileLoader.prompt_get_file_paths()
+    if len(paths) == 0:
+        return
+
+    for _path in paths:
+        print(path.basename(_path) + "\n")
+        file_lines = FileLoader().read_lines_at_path(_path, encoding_try_list, FileLoader.line_post_process)
+
+        repeated_blocks = RepeatsMarker.find_repeats(file_lines)
+        readable_dict = RepeatsMarker.generate_readable_dict(repeated_blocks, file_lines)
+        readable_string = RepeatsMarker.generate_readable_string(readable_dict)
+
+        print(readable_string)
+        print("==============================")
+
+
 if __name__ == "__main__":
-    usage_example()
+    usage_example_multiple_files()
