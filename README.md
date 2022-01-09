@@ -23,7 +23,9 @@
 
 # Other
 函数的可选参数意思基本都能从名字看出来
+
 generate_readable_dict()的show_first_last_lines_count是指若片段较长，则截取片段的前后各x行。
+
 index_increment是在行下标基础上增加一个增量后输出。默认为1。
  
 # Sidenote
