@@ -164,3 +164,4 @@ def usage_example_multiple_files():
 
 if __name__ == "__main__":
     usage_example_multiple_files()
+    input()

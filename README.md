@@ -1,5 +1,5 @@
 # DocumentRepeatsMarker
-检测文档中前后重复的部分，并打印重复段落行号区间。
+检测文档中前后重复的部分，并打印重复段落行号区间。最适合对大段落完全重复且段落内部不存在重复行的情况进行检查。若区域内部存在重复行，识别的重复段落将会被重复行分开。
  
 # ReadlinesPostProcessing
 可修改*FileLoader.line_post_process()*，在读入文件时对每行字符串修改。默认丢弃头尾空格。
